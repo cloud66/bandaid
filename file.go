@@ -1,6 +1,7 @@
 package bandaid
 
 import (
+	"errors"
 	"io"
 	"log"
 	"os"
@@ -17,6 +18,17 @@ func FileExists(filename string) bool {
 		return false
 	}
 	return !info.IsDir()
+}
+
+func FileSize(filename string) (int64, error) {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return 0, errors.New("file not found")
+	}
+	if info.IsDir() {
+		return 0, errors.New("file is a directory")
+	}
+	return info.Size(), nil
 }
 
 func DirExists(dir string) bool {
